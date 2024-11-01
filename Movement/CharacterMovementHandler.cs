@@ -21,17 +21,21 @@ public class CharacterMovementHandler : NetworkBehaviour
         {
             float mouseDeltaX = Input.GetAxis("Mouse X");
             float rotationChange = mouseDeltaX * sensitivity;
-            transform.Rotate(0, rotationChange, 0);
+            // transform.Rotate(0, rotationChange, 0);
 
             // send local player rotate data to server
-            RPC_UpdateRotation(transform.rotation);
+            if (rotationChange != 0)
+            {
+                RPC_UpdateRotation(rotationChange);
+            }
+            
         }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_UpdateRotation(Quaternion newRotation)
+    private void RPC_UpdateRotation(float rotationChange)
     {
-        transform.rotation = newRotation;
+        transform.Rotate(0, rotationChange, 0);
     }
 
     public override void FixedUpdateNetwork()
