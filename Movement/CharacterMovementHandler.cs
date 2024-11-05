@@ -7,8 +7,10 @@ public class CharacterMovementHandler : NetworkBehaviour
     public float sensitivity = 1.3f;
     private NetworkCharacterControllerPrototypeCustom networkCharacterControllerPrototypeCustom;
     private Camera localCamera;
-    private float currentRotation = 0f;
-
+    //private float currentRotation = 0f;
+    private float mouseDeltaX = 0f;
+    private float rotationChange = 0f;
+    private bool isLeftAltPressed = false;
     private void Awake()
     {
         networkCharacterControllerPrototypeCustom = GetComponent<NetworkCharacterControllerPrototypeCustom>();
@@ -17,25 +19,41 @@ public class CharacterMovementHandler : NetworkBehaviour
 
     void Update()
     {
-        if (Object.HasInputAuthority)
+        if (Object.HasInputAuthority && Cursor.lockState == CursorLockMode.Locked/* && Input.GetMouseButton(1)*/)
         {
-            float mouseDeltaX = Input.GetAxis("Mouse X");
-            float rotationChange = mouseDeltaX * sensitivity;
-            // transform.Rotate(0, rotationChange, 0);
-
+            mouseDeltaX = Input.GetAxis("Mouse X");
+            rotationChange = mouseDeltaX * sensitivity;
+            //transform.Rotate(0, rotationChange, 0);
             // send local player rotate data to server
             if (rotationChange != 0)
             {
                 RPC_UpdateRotation(rotationChange);
             }
-            
+            if (Input.GetKeyDown(KeyCode.LeftAlt))
+            {
+                isLeftAltPressed = !isLeftAltPressed;
+                RPC_CursorLock(isLeftAltPressed);
+            }
         }
     }
-
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void RPC_UpdateRotation(float rotationChange)
     {
         transform.Rotate(0, rotationChange, 0);
+    }
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_CursorLock(bool isLeftAltPressed)
+    {
+        if (isLeftAltPressed)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     public override void FixedUpdateNetwork()
@@ -46,7 +64,6 @@ public class CharacterMovementHandler : NetworkBehaviour
             moveDirection = transform.InverseTransformDirection(moveDirection);
 
             networkCharacterControllerPrototypeCustom.Move(moveDirection);
-
 
             if (networkInputData.isJumpPressed)
             {

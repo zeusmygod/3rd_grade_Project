@@ -21,7 +21,7 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform {
   [Networked]
   [HideInInspector]
   public bool IsGrounded { get; set; }
-
+  public bool IsLocked = true;
   [Networked]
   [HideInInspector]
   public Vector3 Velocity { get; set; }
@@ -129,4 +129,19 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform {
     transform.Rotate(0, rotationY * Runner.DeltaTime * rotationSpeed, 0);
   }
 
+  public void CursorLock(bool isLeftAltPressed)
+  {
+    if (isLeftAltPressed && IsLocked)
+    {
+      Cursor.lockState = CursorLockMode.None;
+      Cursor.visible = true;
+      IsLocked = false;
+    }
+    else if (isLeftAltPressed && IsLocked)
+    {
+      Cursor.lockState = CursorLockMode.Locked;
+      Cursor.visible = false;
+      IsLocked = true;
+    }
+  }
 }
