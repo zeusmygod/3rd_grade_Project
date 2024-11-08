@@ -128,20 +128,4 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform {
   {
     transform.Rotate(0, rotationY * Runner.DeltaTime * rotationSpeed, 0);
   }
-
-  public void CursorLock(bool isLeftAltPressed)
-  {
-    if (isLeftAltPressed && IsLocked)
-    {
-      Cursor.lockState = CursorLockMode.None;
-      Cursor.visible = true;
-      IsLocked = false;
-    }
-    else if (isLeftAltPressed && IsLocked)
-    {
-      Cursor.lockState = CursorLockMode.Locked;
-      Cursor.visible = false;
-      IsLocked = true;
-    }
-  }
 }

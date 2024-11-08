@@ -23,7 +23,7 @@ public class CharacterMovementHandler : NetworkBehaviour
         {
             mouseDeltaX = Input.GetAxis("Mouse X");
             rotationChange = mouseDeltaX * sensitivity;
-            //transform.Rotate(0, rotationChange, 0);
+            
             // send local player rotate data to server
             if (rotationChange != 0)
             {

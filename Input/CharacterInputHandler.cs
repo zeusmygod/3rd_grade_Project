@@ -40,7 +40,7 @@ public class CharacterInputHandler : MonoBehaviour
             characterMovementHandler.SetViewInputVector(viewInputVector);
             characterMovementHandler.SetViewInputVector(moveInputVector);
         }*/
-        //鼠標切換
+        // is Alt pressed?
         if(Input.GetKeyDown(KeyCode.LeftAlt))
         {
             isLeftAltPressed = !isLeftAltPressed;
@@ -57,7 +57,7 @@ public class CharacterInputHandler : MonoBehaviour
         }
 
         //Move
-        moveInputVector.x = Input.GetAxis("Horizontal");
+        // moveInputVector.x = Input.GetAxis("Horizontal");
         moveInputVector.y = Input.GetAxis("Vertical");
 
         //Jump
