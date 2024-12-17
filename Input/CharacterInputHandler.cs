@@ -1,16 +1,19 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
 
 public class CharacterInputHandler : MonoBehaviour
 {
     Vector2 moveInputVector = Vector2.zero;
     Vector2 viewInputVector = Vector2.zero;
-    bool isJumpButtonPressed = false;
+    bool IsJumpButtonPressed = false;
     bool isLeftAltPressed = false;
     //other component
     // CharacterMovementHandler characterMovementHandler;
     LocalCameraHandler localCameraHandler;
+    
+
 
     private void Awake()
     {
@@ -56,15 +59,16 @@ public class CharacterInputHandler : MonoBehaviour
             }
         }
 
-        //Move
-        // moveInputVector.x = Input.GetAxis("Horizontal");
-        moveInputVector.y = Input.GetAxis("Vertical");
+            //Move
+            // moveInputVector.x = Input.GetAxis("Horizontal");
+            moveInputVector.y = Input.GetAxis("Vertical");
 
-        //Jump
-        if(Input.GetButtonDown("Jump"))
-        {
-            isJumpButtonPressed = true;
-        }
+            //Jump
+            if (Input.GetButtonDown("Jump"))
+            {
+                IsJumpButtonPressed = true;
+            }
+        
 
         
         //Set view
@@ -88,9 +92,9 @@ public class CharacterInputHandler : MonoBehaviour
         networkInputData.movementInput = moveInputVector;
 
         //jump data
-        networkInputData.isJumpPressed = isJumpButtonPressed;
+        networkInputData.isJumpPressed = IsJumpButtonPressed;
 
-        isJumpButtonPressed = false;
+        IsJumpButtonPressed = false;
 
         return networkInputData;
     }

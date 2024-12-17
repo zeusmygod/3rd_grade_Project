@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
@@ -15,12 +15,12 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     public override void Spawned()
     {
-        if(Object.HasInputAuthority)
+        if (Object.HasInputAuthority)
         {
             Local = this;
 
@@ -33,6 +33,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             RPC_SetNickName(PlayerPrefs.GetString("PlayerNickname"));
 
             Debug.Log("Spawned local player");
+
         }
         else
         {
@@ -48,7 +49,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public void PlayerLeft(PlayerRef player)
     {
-        if(player == Object.InputAuthority)
+        if (player == Object.InputAuthority)
         {
             Runner.Despawn(Object);
         }
@@ -62,7 +63,7 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private void OnNickNameChanged()
     {
         Debug.Log($"Nickname changed for player to {nickName} for player {gameObject.name}");
-        playerNickNameTM.text =nickName.ToString();
+        playerNickNameTM.text = nickName.ToString();
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -72,5 +73,5 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         Debug.Log($"[RPC] SetNickName {nickName}");
         this.nickName = nickName;
     }
-    
+
 }

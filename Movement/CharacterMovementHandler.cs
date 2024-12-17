@@ -11,6 +11,8 @@ public class CharacterMovementHandler : NetworkBehaviour
     private float mouseDeltaX = 0f;
     private float rotationChange = 0f;
     private bool isLeftAltPressed = false;
+    
+
     private void Awake()
     {
         networkCharacterControllerPrototypeCustom = GetComponent<NetworkCharacterControllerPrototypeCustom>();
