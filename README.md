@@ -1,4 +1,3 @@
-使用步驟:
 設置追蹤管理器：
 1. 在 Hierarchy 視窗中，右鍵點擊 → Create Empty。
 2. 將新創建的空物件命名為 "PositionTracker"。
