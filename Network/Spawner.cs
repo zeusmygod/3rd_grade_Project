@@ -13,7 +13,7 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     // Dictionary to keep track of spawned players
     private Dictionary<PlayerRef, NetworkPlayer> spawnedPlayers = new Dictionary<PlayerRef, NetworkPlayer>();
 
-    //other components
+    // other components
     CharacterInputHandler characterInputHandler;
     
     // Clean up when the application quits
@@ -171,6 +171,8 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
         // Clean up all players
         ClearAllPlayers();
         
+        // !重置TempPlayerInfo
+        TempPlayerInfo.Reset();
         // Reset NetworkPlayer static variables
         NetworkPlayer.ResetStaticVariables();
         

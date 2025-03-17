@@ -146,20 +146,18 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             //disable main camera
             Camera.main.gameObject.SetActive(false);
 
-            // Get player name and character selection
-            string playerName = PlayerPrefs.GetString("PlayerNickname");
-            int selectedCharacter = PlayerPrefs.GetInt("CustomNumber", 1);
+            // !從TempPlayerInfo獲取玩家信息
+            string playerName = !string.IsNullOrEmpty(TempPlayerInfo.Name) ? 
+                TempPlayerInfo.Name : "Player" + UnityEngine.Random.Range(1000, 9999);
+                
+            int selectedCharacter = TempPlayerInfo.CharacterSelection >= 1 && TempPlayerInfo.CharacterSelection <= 86 ?
+                TempPlayerInfo.CharacterSelection : 1;
             
             // Check if the name is already in use
             if (IsPlayerNameInUse(playerName))
             {
-                // Generate a unique name
+                // 生成唯一名稱
                 playerName = GenerateUniquePlayerName(playerName);
-                // Update PlayerPrefs for next time
-                PlayerPrefs.SetString("PlayerNickname", playerName);
-                PlayerPrefs.Save();
-                
-                // Notify the player
                 Debug.Log($"Your name was already in use. You've been assigned: {playerName}");
             }
             
@@ -168,6 +166,9 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             
             RPC_SetNickName(playerName);
             RPC_SetCharacterSelection(selectedCharacter);
+
+            // 使用完TempPlayerInfo後重置它
+            TempPlayerInfo.Reset();
 
             Debug.Log($"Spawned local player with name {playerName} and character {selectedCharacter}");
         }
@@ -405,10 +406,6 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
                     {
                         string uniqueName = GenerateUniquePlayerName(name);
                         Debug.Log($"Generating unique name: {uniqueName}");
-                        
-                        // Update PlayerPrefs
-                        PlayerPrefs.SetString("PlayerNickname", uniqueName);
-                        PlayerPrefs.Save();
                         
                         // Set the new name
                         RPC_SetNickName(uniqueName);

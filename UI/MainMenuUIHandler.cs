@@ -22,32 +22,29 @@ public class MainMenuUIHandler : MonoBehaviour
 
     public void OnJoinGameClicked()
     {
-        // Save player nickname
-        PlayerPrefs.SetString("PlayerNickname", inputField1.text);
-        
-        // Validate and save character selection
+        // 角色選擇
         int characterNumber;
         if (int.TryParse(inputField2.text, out characterNumber))
         {
             if (characterNumber >= 1 && characterNumber <= 86)
             {
-                PlayerPrefs.SetInt("CustomNumber", characterNumber);
+                // 將玩家信息存儲到TempPlayerInfo中
+                TempPlayerInfo.Name = inputField1.text;
+                TempPlayerInfo.CharacterSelection = characterNumber;
+                
+                // 加載遊戲場景
+                SceneManager.LoadScene("SampleScene");
             }
             else
             {
                 Debug.LogError("Character selection must be between 1 and 86");
-                return; // Don't proceed if invalid selection
+                return;
             }
         }
         else
         {
             Debug.LogError("Please enter a valid number for character selection");
-            return; // Don't proceed if invalid input
+            return;
         }
-        
-        PlayerPrefs.Save();
-        
-        // Load the game scene
-        SceneManager.LoadScene("SampleScene");
     }
 }
