@@ -59,8 +59,8 @@ public class CharacterInputHandler : MonoBehaviour
             }
         }
 
-            //Move
-            // moveInputVector.x = Input.GetAxis("Horizontal");
+            // Move
+            moveInputVector.x = Input.GetAxis("Horizontal");
             moveInputVector.y = Input.GetAxis("Vertical");
 
             //Jump
