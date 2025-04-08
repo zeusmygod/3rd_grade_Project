@@ -63,7 +63,7 @@ public class CharacterInputHandler : MonoBehaviour
             moveInputVector.x = Input.GetAxis("Horizontal");
             moveInputVector.y = Input.GetAxis("Vertical");
 
-            //Jump
+            // Jump
             if (Input.GetButtonDown("Jump"))
             {
                 IsJumpButtonPressed = true;
