@@ -34,7 +34,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
 
         runner.ProvideInput = true;
-
+        
         return runner.StartGame(new StartGameArgs
         {
             GameMode = gameMode,

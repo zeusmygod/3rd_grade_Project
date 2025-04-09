@@ -11,6 +11,9 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     public static NetworkPlayer Local { get; set; }
     public Transform playerModel;
     
+    [Networked(OnChanged = nameof(OnAnimationStateChanged))]
+    public AnimationState NetworkedAnimationState { get; set; }
+
     // Static collection to track all active players
     private static Dictionary<string, NetworkPlayer> activePlayersByName = new Dictionary<string, NetworkPlayer>();
 
@@ -19,19 +22,25 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     
     [Networked(OnChanged = nameof(OnCharacterSelectionChanged))]
     public int characterSelection { get; set; }
-    
-    // Add network animation state variables
-    [Networked(OnChanged = nameof(OnAnimationStateChanged))]
-    public NetworkBool isJumpButtonPressed { get; set; }
-    
-    [Networked(OnChanged = nameof(OnAnimationStateChanged))]
-    public NetworkBool isVerticalPressed { get; set; }
-    
+       
     // Reference to the character model prefabs
     public GameObject[] characterPrefabs;
     
     // Reference to the current character model
     private GameObject currentCharacterModel;
+
+    // 使用struct合併動畫狀態
+    public struct AnimationState : INetworkStruct
+    {
+        public bool Jump;
+        public bool Vertical;
+
+        public AnimationState(bool jump, bool vertical)
+        {
+            Jump = jump;
+            Vertical = vertical;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -458,13 +467,10 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_UpdateAnimationState(bool jumpPressed, bool verticalPressed, RpcInfo info = default)
     {
-        // Only update network variables when the state actually changes
-        if (this.isJumpButtonPressed != jumpPressed || this.isVerticalPressed != verticalPressed)
-        {
-            // Debug.Log($"[RPC] UpdateAnimationState jump={jumpPressed}, vertical={verticalPressed}");
-            this.isJumpButtonPressed = jumpPressed;
-            this.isVerticalPressed = verticalPressed;
-        }
+        var newState = new AnimationState(jumpPressed, verticalPressed);
+        if (NetworkedAnimationState.Equals(newState)) return;
+
+        NetworkedAnimationState = newState;
     }
     
     // Called when animation state changes
@@ -481,14 +487,15 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     // Update animation state
     private void OnAnimationStateChanged()
     {
-        // Find the Animations component on the character model
         if (currentCharacterModel != null)
         {
             Animations animationsComponent = currentCharacterModel.GetComponent<Animations>();
             if (animationsComponent != null)
             {
-                // Update animation state
-                animationsComponent.UpdateAnimationState(isJumpButtonPressed, isVerticalPressed);
+                animationsComponent.UpdateAnimationState(
+                    NetworkedAnimationState.Jump,
+                    NetworkedAnimationState.Vertical
+                );
             }
         }
     }
@@ -608,7 +615,10 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         // Immediately update animation state
         if (animationsComponent != null)
         {
-            animationsComponent.UpdateAnimationState(isJumpButtonPressed, isVerticalPressed);
+            animationsComponent.UpdateAnimationState(
+                NetworkedAnimationState.Jump,
+                NetworkedAnimationState.Vertical
+            );
         }
         
         Debug.Log("Successfully updated character model.");

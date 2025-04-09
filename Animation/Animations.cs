@@ -14,7 +14,7 @@ public class Animations : MonoBehaviour
 
     // 用於限制 RPC 調用頻率的計時器
     private float rpcCooldown = 0f;
-    private const float RPC_COOLDOWN_TIME = 0.1f; // 每 0.1 秒最多發送一次 RPC
+    private const float RPC_COOLDOWN_TIME = 0.2f; // 每 0.2 秒最多發送一次 RPC
 
     void Start()
     {
