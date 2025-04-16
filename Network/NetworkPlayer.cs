@@ -22,9 +22,6 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     
     [Networked(OnChanged = nameof(OnCharacterSelectionChanged))]
     public int characterSelection { get; set; }
-       
-    // Reference to the character model prefabs
-    public GameObject[] characterPrefabs;
     
     // Reference to the current character model
     private GameObject currentCharacterModel;
@@ -325,38 +322,6 @@ public class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             
             Runner.Despawn(Object);
         }
-    }
-    
-    // Clean up when the object is destroyed
-    public override void Despawned(NetworkRunner runner, bool hasState)
-    {
-        base.Despawned(runner, hasState);
-        
-        Debug.Log($"Player {nickName} despawned");
-        
-        // Remove from active players dictionary
-        string playerNameStr = nickName.ToString();
-        if (!string.IsNullOrEmpty(playerNameStr))
-        {
-            if (activePlayersByName.ContainsKey(playerNameStr))
-            {
-                Debug.Log($"Removing player {playerNameStr} from activePlayersByName dictionary");
-                activePlayersByName.Remove(playerNameStr);
-            }
-        }
-        
-        // If this is the local player, reset the Local reference
-        if (Object.HasInputAuthority)
-        {
-            Debug.Log("Resetting NetworkPlayer.Local reference");
-            Local = null;
-        }
-        
-        // Clean up character model
-        CleanupCharacterModel();
-        
-        // Force garbage collection
-        System.GC.Collect();
     }
     
     // Clean up character model
